@@ -1,0 +1,33 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+
+public class NearestNeighborGenerator {
+	private final String filePath = "C:\\Ben Gurion\\NearestNeighbor\\METRIC_TO_FORMAT.txt";
+	public static void main(String[] args) throws FileNotFoundException {
+		/**
+		 * args[0] : path of the training set
+		 * args[1] : type of data
+		 * args[2] : metric type
+		 */
+		
+		final hashMultiMap MetricToFormat = new hashMultiMap(filePath);
+		
+		final String trainingSetFilePath = args[0];
+		final String dataType = args[1];
+		final String metricType = args[2];
+		System.out.println(trainingSetFilePath);
+		System.out.println(dataType);
+		System.out.println(metricType);
+		DataBase db  = new DataBase(trainingSetFilePath, dataType, metricType);
+//		Scanner s = new Scanner(new FileReader(trainingSetFilePath));
+//		 while (s.hasNext()) {
+//			    System.out.println(s.next());
+//			   }
+//		 s.close();
+//		System.out.println("bla bla...");
+		
+	}
+	
+
+}

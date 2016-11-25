@@ -1,0 +1,51 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+
+public class hashMultiMap {
+	private final String filePath = "C:\\Ben Gurion\\NearestNeighbor\\METRIC_TO_FORMAT.txt";
+	private HashMap<String, ArrayList<String>> metricToFormat = new HashMap<String, ArrayList<String>>();
+	public hashMultiMap(){
+		final String REGEX_DATABASE = "[a-zA-Z0-9]+";
+		final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
+		try {
+			Scanner s = new Scanner(new FileReader(this.filePath));
+			while (s.hasNextLine()){
+				String metric = s.findInLine(pattern1);
+				System.out.println("s has next? " + "s.hasNext(pattern1));
+				ArrayList<String> formats = new ArrayList<String>();
+//				while(s.hasNext(pattern1)) {
+//					System.out.println("got here");
+//					formats.add(s.findInLine(pattern1));
+//				}
+				metricToFormat.put(metric, formats);
+				s.nextLine();
+			}
+			s.close();
+			} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		
+		}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
+

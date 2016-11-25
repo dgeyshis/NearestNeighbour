@@ -1,0 +1,25 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+
+public class NearestNeighborGenerator {
+	public static void main(String[] args) throws FileNotFoundException {
+		/**
+		 * args[0] : path of the training set
+		 * args[1] : type of data
+		 * args[2] : metric type
+		 */
+		final String filePath = "//METRIC_TO_FORMAT.txt";
+		final hashMultiMap MetricToFormat = new hashMultiMap(filePath);
+		
+		final String trainingSetFilePath = args[0];
+		final String dataType = args[1];
+		final String metricType = args[2];
+		System.out.println(trainingSetFilePath);
+		System.out.println(dataType);
+		System.out.println(metricType);
+		DataBase db  = new DataBase(trainingSetFilePath, dataType, metricType);
+	}
+	
+
+}

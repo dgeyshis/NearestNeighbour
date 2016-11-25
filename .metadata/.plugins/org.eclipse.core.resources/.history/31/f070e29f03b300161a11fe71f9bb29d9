@@ -1,0 +1,35 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DataBase {
+	public DataBase(String trainingSetFilePath, String dataType, String metricType) throws FileNotFoundException {
+//		assuming the file's first row holds the number of vectors and the vector's size
+		final String REGEX_DATABASE_SIZE = "\\d+";
+		final Pattern pattern1  = Pattern.compile(REGEX_DATABASE_SIZE);
+		Scanner s = new Scanner(new FileReader(trainingSetFilePath));
+		final int numOfVectors = Integer.parseInt(s.findInLine(pattern1));
+		final int vectorSize =Integer.parseInt(s.findInLine(pattern1));
+		float[][] db = new float[numOfVectors][vectorSize];
+		for (int i=0; i< db.length;i++)
+			for (int j=0; j<db[i].length;j++){
+				db[i][j] = Integer.parseInt(s.findInLine(pattern1));
+			}
+		s.nextLine();
+		}
+		
+//		for (int i=0; i< db.length;i++){
+//			for (int j=0; j<db[i].length;j++){
+//				System.out.print(db[i][j] + ", ");
+//			}
+//			System.out.println();
+//		}
+//		System.out.println(s.next(pattern1));
+//		while (s.hasNext()) {
+//			    System.out.println(s.next());
+//			   }
+//		 s.close();
+	
+}

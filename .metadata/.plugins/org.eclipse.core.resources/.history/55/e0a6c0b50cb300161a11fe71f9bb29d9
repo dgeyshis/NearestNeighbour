@@ -1,0 +1,54 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+public class DataBase {
+	private List<String[]> formatToMetric = new ArrayList<String[]>();
+    private String trainingSetFilePath;
+    private String format;
+    private String metricType;
+	public DataBase(String trainingSetFilePath, String format, String metricType) {
+		this.trainingSetFilePath = trainingSetFilePath; 
+		this.format= format;
+		this.metricType = metricType;
+		createMetricFormatList();
+		
+		try {
+			createVector1DB();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void createMetricFormatList() {
+		String[] euclidianVector1 = {"euclidian", "vector1"};
+		this.formatToMetric.add(euclidianVector1);
+	}
+	
+	private float[][] createVector1DB() throws FileNotFoundException {
+//		assuming the file's first row holds the number of vectors and the vector's size
+		final String REGEX_DATABASE_SIZE = "\\d+";
+		final Pattern pattern1  = Pattern.compile(REGEX_DATABASE_SIZE);
+		Scanner s = new Scanner(new FileReader(this.trainingSetFilePath));
+		final int numOfVectors = Integer.parseInt(s.findInLine(pattern1));
+		final int vectorSize =Integer.parseInt(s.findInLine(pattern1));
+		float[][] db = new float[numOfVectors][vectorSize];
+		for (int i=0; i< db.length;i++) {
+			s.nextLine();
+			for (int j=0; j<db[i].length; j++){
+				db[i][j] = Integer.parseInt(s.findInLine(pattern1));
+			}
+		}
+		for (int i=0; i< db.length;i++){
+			for (int j=0; j<db[i].length;j++){
+				System.out.print(db[i][j] + ", ");
+			}
+			System.out.println();
+		}
+		 s.close();
+		return db;
+	}
+}

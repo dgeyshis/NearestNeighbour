@@ -1,0 +1,14 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+public class hashMultiMap {
+	private HashMap<String, ArrayList<String>> metricToFormat = new HashMap<String, ArrayList<String>>();
+	private final List<String> test = Arrays.asList("vector1","vector2");
+	public hashMultiMap(){
+		for(int i = 0; i < METRIC_FORMAT_PAIRS.length; i++){
+//			metricToFormat.put(key, value)
+		}
+	}
+}

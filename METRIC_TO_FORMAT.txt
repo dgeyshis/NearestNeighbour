@@ -1,0 +1,2 @@
+euclidian: vector1, vector2
+bulgarian: vector3, vector4
