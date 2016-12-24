@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="NearestNeighborGenerator"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="&quot;C:\Ben Gurion\NearestNeighbor\dataBaseTest.txt&quot;&#13;&#10;&quot;vector&quot;&#13;&#10;&quot;euclidian&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="C:\Users\Asus\Desktop\NN\DataBaseTest.txt&#13;&#10;&quot;vector&quot;&#13;&#10;&quot;euclidian&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="NearestNeighbor"/>
 </launchConfiguration>
