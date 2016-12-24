@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-
+// maps a metric type to an array of formats the metric can accept
 public class hashMultiMap {
 	private HashMap<String, ArrayList<String>> metricToFormat = new HashMap<String, ArrayList<String>>();
 	public hashMultiMap(String filePath){
@@ -21,6 +21,10 @@ public class hashMultiMap {
 				ArrayList<String> formats = new ArrayList<String>();
 				while((str=s.findInLine(pattern1))!=null) {
 					formats.add(str);
+				}
+				
+				if (metric != null){
+					metricToFormat.put(metric, formats);
 				}
 
 				if (s.hasNextLine()) {s.nextLine();}
@@ -40,5 +44,6 @@ public class hashMultiMap {
 	public boolean validateMetricFormat (String metric, String format) {
 		return validateMetric(metric) && (this.metricToFormat.get(metric).contains(format));
 	}
+
 	
 }

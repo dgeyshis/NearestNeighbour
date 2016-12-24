@@ -1,4 +1,4 @@
 
-public abstract class Metric<P> {
-	public abstract Double calcDistance(P firstPoint, P secondPoint);
+interface Metric<P> {
+	public  Double calcDistance(P firstPoint, P secondPoint);
 }
