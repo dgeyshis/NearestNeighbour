@@ -14,11 +14,14 @@ public class NearestNeighborGenerator {
 		final String dataType = args[1];
 		final String metricType = args[2];
 		final hashMultiMap map = new hashMultiMap("METRIC_TO_FORMAT.txt");
-		dataBase db;
+		dataBase trainingSet;
 		
-		if (map.validateMetricFormat(metricType, dataType)){     //check if metricType and dataType are valid and if metricType calculates formatType
-			db = new dataBase(trainingSetFilePath, metricType, dataType);
+		
+		if (map.validateMetricFormat(metricType, dataType)){   
+			trainingSet = new dataBase(trainingSetFilePath, metricType, dataType);
 		}
+		
+	
 		
 	
 

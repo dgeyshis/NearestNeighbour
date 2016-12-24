@@ -1,4 +1,6 @@
 
-interface Metric<P> {
-	public  Double calcDistance(P firstPoint, P secondPoint);
+interface Metric<P,T> {
+
+	public T calcDistance(P p1, P p2);
+
 }

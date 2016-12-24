@@ -42,6 +42,11 @@ public class hashMultiMap {
 	}
 	
 	public boolean validateMetricFormat (String metric, String format) {
+		System.out.println("valid matric to formt: ");
+		
+		System.out.println(metricToFormat);
+		System.out.println("");
+		
 		return validateMetric(metric) && (this.metricToFormat.get(metric).contains(format));
 	}
 

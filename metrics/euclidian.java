@@ -1,5 +1,5 @@
 
-public class euclidian implements Metric<double[]> {
+public class euclidian implements Metric<double[], Double> {
 
 	public Double calcDistance(double[] firstPoint, double[] secondPoint) {
 		int len = firstPoint.length;
