@@ -16,3 +16,5 @@ public class euclidian extends Metric<double[], Double> {
 
 
 }
+
+
