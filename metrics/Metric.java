@@ -1,8 +1,9 @@
 
-interface Metric<P,T> {
-
-	public T calcDistance(P p1, P p2);
+public abstract class Metric<P1,P2> {
+//P1- type of distance
+//P2- type if points
 	
-//public boolean operatorLessThenOrEqual(P p1, P p2);
+	public abstract P2 calcDistance(P1 p1, P1 p2);
+
 
 }
