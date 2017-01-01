@@ -13,17 +13,22 @@ public class NearestNeighborGenerator {
 		final String trainingSetFilePath = args[0];
 		final String dataType = args[1];
 		final String metricType = args[2];
-		System.out.println(trainingSetFilePath);
-		System.out.println(dataType);
-		System.out.println(metricType);
-		Scanner s = new Scanner(new FileReader(trainingSetFilePath));
-		 while (s.hasNext()) {
-			    System.out.println(s.next());
-			   }
-		 s.close();
-		System.out.println("bla bla...");
+		final hashMultiMap map = new hashMultiMap("METRIC_TO_FORMAT.txt");
+		dataBaseType1 db = null;
+		
+		//correctness check//
+		
+		if (map.validateMetricFormat(metricType, dataType)){   
+		      db = new dataBaseType1(trainingSetFilePath, metricType, dataType);
+		}
+		
+
+
 		
 	}
+	
+
+	
 	
 
 }
