@@ -21,7 +21,7 @@ public class dataBaseType1 {
 	int sizeOfGammaNet;
 	final String REGEX_DATABASE = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?";  //regular expression for double
 	final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
-	double scale = 16;
+	double scale;
 	
 	public dataBaseType1 (String trainingSetFilePath, String metricType, String format) throws FileNotFoundException{
 	
@@ -35,7 +35,7 @@ public class dataBaseType1 {
 		makeGammaNet();		
 		System.out.println("");
 		printDataBase(db);
-	//	printA/llDistances();
+		printAllDistances();
 	
 	}
 	
@@ -114,7 +114,6 @@ public class dataBaseType1 {
 	
 	
 	
-	
 	public void makeGammaNet(){
 		
 	/**
@@ -128,7 +127,12 @@ public class dataBaseType1 {
 		ArrayList<double[]> restPoints = new ArrayList<double[]>();
 		ArrayList<Double> restLables = new ArrayList<Double>();
 		boolean gammaElem = true;
-		Map<Double,Integer> lableToCount =new HashMap<Double,Integer>();  
+		Map<Double,Integer> lableToCount;
+		ArrayList<Map<Double,Integer>> labelToCountArray = new ArrayList<Map<Double,Integer>>();;
+		double minDistanceFromGammaPoint;
+		double currDistance;
+		int minDistanceFromGammaPointIndex;
+		
 		sizeOfGammaNet = 0;
 		int currCount;
 		
@@ -144,37 +148,48 @@ public class dataBaseType1 {
 			
 			if (gammaElem==true){
 				tmpPoints.add(trainingSetPoints[i]);
-				restPoints.add(trainingSetPoints[i]);
-				restLables.add(trainingSetLabels[i]);
+				labelToCountArray.add(new HashMap<Double,Integer>());
 				sizeOfGammaNet++;
 			}
-			else{
-				restPoints.add(trainingSetPoints[i]);
-				restLables.add(trainingSetLabels[i]);
-			}
-			
+
+			restPoints.add(trainingSetPoints[i]);
+			restLables.add(trainingSetLabels[i]);
 			gammaElem = true;
 			
 		}
 				
 		
 		//sets labels for gammaNet elements
-		for (int i=0;i<tmpPoints.size();i++){
-			for (int j=0;j<restPoints.size();j++){
-				if (((euclidian)metric).calcDistance(tmpPoints.get(i), restPoints.get(j))<scale){
-					if (lableToCount.containsKey(restLables.get(j))){
-						currCount = lableToCount.get(restLables.get(j));
-						lableToCount.put(restLables.get(j), ++currCount);
-					}
-					else{
-						lableToCount.put(restLables.get(j), 1);
-					}
+		
+		
+		//create label count for each element in the gamma net
+		for (int i=0;i<restPoints.size();i++){
+			
+			minDistanceFromGammaPointIndex = 0;
+			minDistanceFromGammaPoint = metric.calcDistance(restPoints.get(i), tmpPoints.get(0));		
+			for (int j=0;j<sizeOfGammaNet;j++){
+				currDistance = metric.calcDistance(restPoints.get(i), tmpPoints.get(j));
+				if (currDistance<minDistanceFromGammaPoint){
+					minDistanceFromGammaPointIndex = j;
+					minDistanceFromGammaPoint = currDistance;
 				}
 			}
 			
-		//	System.out.println("");
-		//	System.out.println("lable to count for point " + i + ": ");
-		//	System.out.println(Arrays.asList(lableToCount));
+			lableToCount = labelToCountArray.get(minDistanceFromGammaPointIndex);
+
+			if (lableToCount.containsKey(restLables.get(i))){
+				currCount = lableToCount.get(restLables.get(i));
+				lableToCount.put(restLables.get(i) , ++currCount);
+			}
+			else{
+				lableToCount.put(restLables.get(i) , 1);
+			}
+		}		
+	
+		//assign majority label for each gamma net element
+		for (int i=0;i<sizeOfGammaNet;i++){
+			lableToCount = labelToCountArray.get(i);
+			
 			Double maxLable = (Double)null;
 			Integer maxCount = (Integer)null; ;
 
@@ -192,10 +207,9 @@ public class dataBaseType1 {
 			    }
 			}
 			
-			
-			tmpLables.add(maxLable);
-			lableToCount.clear();
+			tmpLables.add(maxLable);		
 		}
+		
 		
 		
 	//	create gammaNet arrays
