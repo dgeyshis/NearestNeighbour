@@ -8,11 +8,12 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class dataBaseType1 {
-
+	
+	//change lableling gamma net using new information
 	private double[][] trainingSetPoints;
-	private double[] trainingSetLables;
+	private double[] trainingSetLabels;
 	private double[][] gammaNetPoints;
-	private double[] gammaNetLables;
+	private double[] gammaNetLabels;
 	//Metric<?, ?> metric;
 	euclidian metric;
 	int dim;
@@ -20,7 +21,7 @@ public class dataBaseType1 {
 	int sizeOfGammaNet;
 	final String REGEX_DATABASE = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?";  //regular expression for double
 	final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
-	double scale = 30;
+	double scale = 16;
 	
 	public dataBaseType1 (String trainingSetFilePath, String metricType, String format) throws FileNotFoundException{
 	
@@ -34,6 +35,7 @@ public class dataBaseType1 {
 		makeGammaNet();		
 		System.out.println("");
 		printDataBase(db);
+	//	printA/llDistances();
 	
 	}
 	
@@ -42,7 +44,7 @@ public class dataBaseType1 {
 		metric = new euclidian();
 	}
 	
-	
+
 	public void makeTrainingSet(String trainingSetFilePath, String format) throws FileNotFoundException{
 		 Scanner s = new Scanner(new FileReader(trainingSetFilePath));
 		 sizeOfTrainingSet = Integer.parseInt(s.findInLine(pattern1));
@@ -50,7 +52,7 @@ public class dataBaseType1 {
 		 
 
 		 trainingSetPoints = new double[sizeOfTrainingSet][dim];
-		 trainingSetLables = new double[sizeOfTrainingSet];
+		 trainingSetLabels = new double[sizeOfTrainingSet];
 		 		
 		 String inLine;
 		 int currPoint=0;
@@ -59,7 +61,7 @@ public class dataBaseType1 {
 		 
 		 while (s.hasNextLine()){
 			 
-			 trainingSetLables[currPoint] = Double.parseDouble(s.findInLine(pattern1));
+			 trainingSetLabels[currPoint] = Double.parseDouble(s.findInLine(pattern1));
 			 			 
 			 while((inLine=s.findInLine(pattern1))!=null) {
 				 trainingSetPoints[currPoint][currAttribute] = Double.parseDouble(inLine);	
@@ -114,6 +116,13 @@ public class dataBaseType1 {
 	
 	
 	public void makeGammaNet(){
+		
+	/**
+	 * tmpPoint : temporary array for the gamma net elements
+	 * tmpLabels : labels for tmpPoins elements
+	 * restPoints : temporary array for all of the elements of the training set
+	 * restLabels: labels for restPoint elements
+	*/
 		ArrayList<double[]> tmpPoints = new ArrayList<double[]>();
 		ArrayList<Double> tmpLables = new ArrayList<Double>();
 		ArrayList<double[]> restPoints = new ArrayList<double[]>();
@@ -126,6 +135,7 @@ public class dataBaseType1 {
 		//sets which points are in the gamma net
 		for (int i=0; i<sizeOfTrainingSet;i++){
 			for (int j=0;j<sizeOfGammaNet;j++){
+
 				if (((euclidian)metric).calcDistance(trainingSetPoints[i], tmpPoints.get(j))<scale){
 					gammaElem = false;
 					break;
@@ -134,11 +144,13 @@ public class dataBaseType1 {
 			
 			if (gammaElem==true){
 				tmpPoints.add(trainingSetPoints[i]);
+				restPoints.add(trainingSetPoints[i]);
+				restLables.add(trainingSetLabels[i]);
 				sizeOfGammaNet++;
 			}
 			else{
 				restPoints.add(trainingSetPoints[i]);
-				restLables.add(trainingSetLables[i]);
+				restLables.add(trainingSetLabels[i]);
 			}
 			
 			gammaElem = true;
@@ -160,9 +172,9 @@ public class dataBaseType1 {
 				}
 			}
 			
-			System.out.println("");
-			System.out.println("lable to count for point " + i + ": ");
-			System.out.println(Arrays.asList(lableToCount));
+		//	System.out.println("");
+		//	System.out.println("lable to count for point " + i + ": ");
+		//	System.out.println(Arrays.asList(lableToCount));
 			Double maxLable = (Double)null;
 			Integer maxCount = (Integer)null; ;
 
@@ -188,20 +200,24 @@ public class dataBaseType1 {
 		
 	//	create gammaNet arrays
 		gammaNetPoints = new double[tmpPoints.size()][dim];
-		gammaNetLables = new double[tmpPoints.size()];
+		gammaNetLabels = new double[tmpPoints.size()];
 		for (int i=0; i<tmpPoints.size();i++){
 			gammaNetPoints[i] = tmpPoints.get(i);
 			if ( tmpLables.get(i) == null){
-				gammaNetLables[i] = 1;
+				gammaNetLabels[i] = 1;
 			}
 			else{
-				gammaNetLables[i] = tmpLables.get(i);
+				gammaNetLabels[i] = tmpLables.get(i);
 			}
 			
 		}	
 		
 }
 	
+	
+///////////////////////////////////////////////////////////////
+///////////////////////////  Prints ///////////////////////////
+///////////////////////////////////////////////////////////////
 	
 public void printDataBase(data db){
 		
@@ -215,7 +231,7 @@ public void printDataBase(data db){
 				System.out.println("size: " + sizeOfTrainingSet);
 			    System.out.println("dim: " + dim);
 				 for (int i =0; i<sizeOfTrainingSet;i++){
-				 System.out.println("point " + i + " : " + Arrays.toString(trainingSetPoints[i]) + ", lable: " + trainingSetLables[i]);				 
+				 System.out.println("point " + i + " : " + Arrays.toString(trainingSetPoints[i]) + ", lable: " + trainingSetLabels[i]);				 
 				 }
 				break;
 				
@@ -225,7 +241,7 @@ public void printDataBase(data db){
 				 System.out.println("size: " + sizeOfGammaNet);
 				 System.out.println("dim: " + dim);
 				 for (int i =0; i<sizeOfGammaNet;i++){
-				 System.out.println("point " + i + " : " + Arrays.toString(gammaNetPoints[i]) + ", lable: " + gammaNetLables[i]);				 
+				 System.out.println("point " + i + " : " + Arrays.toString(gammaNetPoints[i]) + ", lable: " + gammaNetLabels[i]);				 
 				 }
 				break;
 				
@@ -234,8 +250,23 @@ public void printDataBase(data db){
 			}	    
 
 	}
+
+public void printAllDistances(){
+	
+	System.out.println();
+	System.out.println("Distances: ");
+	for (int i=0; i<sizeOfTrainingSet;i++){
+		for (int j=0; j<sizeOfTrainingSet;j++){
+			System.out.print(i + " to " + j + ": ");
+			System.out.println(((euclidian)metric).calcDistance(trainingSetPoints[i], trainingSetPoints[j]));
+						
+		}
+		
+	}
+}
 		
 }
+
 
 
 
