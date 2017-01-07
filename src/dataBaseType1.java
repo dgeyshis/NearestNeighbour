@@ -9,24 +9,40 @@ import java.util.regex.Pattern;
 
 public class dataBaseType1 {
 	
-	//change lableling gamma net using new information
+	/**
+	 * trainingSetPoints : a collection of training set points such that dataSetPoints[i] is the i'th point
+	 * trainingSetLabels : training set labels such that trainingSetLabels[i] is the label of trainingSetPoints[i]
+	 * gammaNetPoints : gamma net point
+	 * gammaNetPoints : gamma net labels such that gammaNetPoints[i] is the label of gammaNetPoints[i]
+	 * metric : distance function 
+	 * dim : dimension of each point (gammaNet point, trainingSet point etc)
+	 * delta : a value in range [0..1], is used to calculate the penalty of some scale, input by user
+	 * sizeOfTrainingSet
+	 * sizeOfGammaNet
+	 * scale : the scale which is used to build the gamma net
+	 */
+	
+	
 	private double[][] trainingSetPoints;
 	private double[] trainingSetLabels;
 	private double[][] gammaNetPoints;
 	private double[] gammaNetLabels;
-//	private double[][] dataSetPoints;
-	private double[] dataSetLabels;
-	//Metric<?, ?> metric;
 	euclidian metric;
 	int dim;
 	int sizeOfTrainingSet;
 	int sizeOfGammaNet;
-	final String REGEX_DATABASE = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?";  //regular expression for double
-	final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
 	double scale;
 	double delta;
 	
 	public dataBaseType1 (String trainingSetFilePath, String metricType, String format, double _delta) throws FileNotFoundException{
+		
+		   /**
+		   * This method is the constructor for dataBaseType1
+		   * @param trainingSetFilePath : The path to the input file with the training sample information
+		   * @param metricType : Metric type
+		   * @param format : The format of the input file
+		   * @param _delta : a Value between 0 and 1, this is a user input
+		   */
 		
 		this.delta = _delta; 
 		data db = data.TRAINING_SET;
@@ -39,17 +55,20 @@ public class dataBaseType1 {
 		makeClassifier();
 		
 		db = data.GAMMA_NET;
-	//	System.out.println("");
 		printDataBase(db);
 		printAllDistances();
 	
 	}
 	
-	// the classifier is gammaNet 
-	// dataSetPoints : collection on points to classify
-	// dataSetLabels : assigned labels for dataSetPoints points
-	// this method will put the assigned labels in dataSetLabeles
+
 	double[] classify(double[][] dataSetPoints , int dataSetSize){
+		
+		/**
+		 * This method calculates labels to an array of unlabeled points using the gammaNet class member and scale
+		 * @param dataSetPoints : a collection of points such that dataSetPoints[i] is the i'th point
+		 * @param dataSetSize : number of point is dataSetPoints
+		 * @return double[] such that the i'th point is the returned array is the calculated label for the point dataSetPoints[i]
+		 */
 		
 		double[] dataSetLabels = new double[dataSetSize];
 		double minDistance;
@@ -77,6 +96,16 @@ public class dataBaseType1 {
 	
 	
 	double calcPenalty(int trainingSetSize, int gammaNetSize,  double alpha, int diffLabels, double delta, double epsilone){
+		
+		/**
+		 * This method calculates the penalty of some scale (and the gamma net created using that scale) on the training sample
+		 * @param trainingSetSize
+		 * @param gammaNetSize
+		 * @param alpha
+		 * @param diffLabels : number of different labeles in the training set
+		 * @param delta : trainingSetSize/(trainingSetSize - gammaNetSize)
+		 * @param epsilon : the error of the classifier (which is the gamma net) on the training set
+		 */
 		
 		double pen;
 		pen = trainingSetSize * gammaNetSize * alpha * diffLabels * delta * epsilone;
@@ -121,6 +150,18 @@ public class dataBaseType1 {
 	
 	double calcClassifierError(double[][] dataSetPoints , double[] originalLbels, double[] assignedLabels, int size){
 		
+		/**
+		 * This method calculates the error of the classifier
+		 * @param  dataSetPoints : points that were labeled using the classifier (the gamma net)
+		 * @param originalLbels : the labels for each point in dataSetPoints such that the i'th label is the label of dataSetPoints[i]
+		 * (this labels are the true labels for each point, they are not calculated, rather they are given as user input
+		 * @param assignedLabels : the labels that were assigned by the classifier to the point in dataSetPoints.
+		 * the i'th label in assignedLabels is the calculated label for the point dataSetPoints[i]
+		 * @param size : number of points in dataSetPoints
+		 * @return double, the error of the labels in assignedLabels on the points in dataSetPoints
+		 * the formula for the error is - sum of I[originalLbels[i]!=assignedLabels[i]]\size, 0<=i<=size 
+		 */
+		
 		double error = 0;
 		for (int i=0;i<size;i++){
 			
@@ -136,6 +177,11 @@ public class dataBaseType1 {
 	
 	double getMaxDistance(){
 		
+		/**
+		 * @return double, The maximal distance (according to metric) between trainingSetPoints[0] and any other point trainingSetPoints[i]
+		 * in trainingSetPoints, 0<=i<=sizeOfTrainingSet
+		 */
+		
 		double max = 0;
 		
 		for (int i=0;i<sizeOfTrainingSet;i++){
@@ -147,6 +193,11 @@ public class dataBaseType1 {
 	}
 	
 	int calcDiffLabelCount(){
+		
+		/**
+		 * @return int , number of different labels used to label the points in trainingSetPoints
+		 */
+		
 		Map<Double,Boolean> lableToCount = new HashMap<Double,Boolean>();
 		
 		for (int i=0;i<sizeOfTrainingSet;i++){
@@ -160,12 +211,33 @@ public class dataBaseType1 {
 	}
 	
 	public void makeMetric(String metricType){	
+		
+		/**
+		 * This method creates an instance of the required metric based on user input
+		 * @param metricType : the name of the required metric
+		 */
+		
 		//metric = metricFactory.getMetric(metricType);
 		metric = new euclidian();
 	}
 	
 
 	public void makeTrainingSet(String trainingSetFilePath, String format) throws FileNotFoundException{
+		
+		/**
+		 * This method parses the input file of the training set and creates 2 arrays, 1 for the point (which the class member trainingSetPoints
+		 * will point to) and 1 for the labels of the input point (which the class member trainingSetLabels points to)
+		 * @param trainingSetFilePath : path of the input file with the training set points
+		 * @param format
+		 * information regarding the method variables:
+		 * REGEX_DATABASE : regular expression for type double
+		 * pattern1 : pattern of regular expression REGEX_DATABASE to extrace information from each line
+		 * sizeOfTrainingSet : size of training sample according to the input file
+		 * dim : dimesion of each point according to the input file
+		 */
+		
+	 	 final String REGEX_DATABASE = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?";  //regular expression for double
+		 final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
 		 Scanner s = new Scanner(new FileReader(trainingSetFilePath));
 		 sizeOfTrainingSet = Integer.parseInt(s.findInLine(pattern1));
 		 dim = Integer.parseInt(s.findInLine(pattern1));
@@ -205,6 +277,14 @@ public class dataBaseType1 {
 	}	
 	
 	public double getDistance(int i, int j, data db){
+
+		/**
+		 * This method calculates the distance between point i and point j according to the class member metric
+		 * @param i : index of the first point
+		 * @param j : index of the second point
+		 * @param db : an enum with the value TRAINING_SET or GAMMA_NET
+		 * used to differentiate between the data base with the requested points 
+		 */
 		
 		double[][] currDB = null;
 		
@@ -237,6 +317,13 @@ public class dataBaseType1 {
 	public void makeGammaNet(double scale){
 		
 	/**
+	 * This method creates a gamma net according to the training set a scale
+	 * after using this method:
+	 * The class member gammaNetPoints will point to an array of points which are the gamma net elements
+	 * The class member gammaNetLabels will point to an array of labels which are the gamma net labels
+	 * The class member sizeOfGammaNet will indicate the number of elements in the gamma net created
+	 * @param scale
+	 * information regarding the method variables:
 	 * tmpPoint : temporary array for the gamma net elements
 	 * tmpLabels : labels for tmpPoins elements
 	 * restPoints : temporary array for all of the elements of the training set
@@ -355,6 +442,10 @@ public class dataBaseType1 {
 	
 public void printDataBase(data db){
 		
+	/**
+	 * This method prints the points and there labels of db, for debbuging purposes
+	 * @param db, an enum which indicates what db to print, the training set or the gamme net
+	 */
 		
 	    
 	    switch (db){
@@ -372,7 +463,6 @@ public void printDataBase(data db){
 			case GAMMA_NET:
 				 System.out.println();
 				 System.out.println("gamma net- ");
-				 System.out.println();
 				 System.out.println("scale: " + scale);
 				 System.out.println("size: " + sizeOfGammaNet);
 				 System.out.println("dim: " + dim);
@@ -388,6 +478,11 @@ public void printDataBase(data db){
 	}
 
 public void printAllDistances(){
+	
+	/**
+	 * This method print the distance from point i to j (for each 0<=i,j<=sizeOfTrainingSet) according to class memeber metric
+	 * for debugging purposes
+	 */
 	
 	System.out.println();
 	System.out.println("Distances: ");
