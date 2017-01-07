@@ -14,6 +14,8 @@ public class dataBaseType1 {
 	private double[] trainingSetLabels;
 	private double[][] gammaNetPoints;
 	private double[] gammaNetLabels;
+//	private double[][] dataSetPoints;
+	private double[] dataSetLabels;
 	//Metric<?, ?> metric;
 	euclidian metric;
 	int dim;
@@ -22,21 +24,154 @@ public class dataBaseType1 {
 	final String REGEX_DATABASE = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?";  //regular expression for double
 	final Pattern pattern1  = Pattern.compile(REGEX_DATABASE);
 	double scale;
+	double delta;
 	
-	public dataBaseType1 (String trainingSetFilePath, String metricType, String format) throws FileNotFoundException{
-	
+	public dataBaseType1 (String trainingSetFilePath, String metricType, String format, double _delta) throws FileNotFoundException{
+		
+		this.delta = _delta; 
 		data db = data.TRAINING_SET;
 
 		makeTrainingSet(trainingSetFilePath, format);
 		makeMetric(metricType);
 		printDataBase(db);
 	
+		
+		makeClassifier();
+		
 		db = data.GAMMA_NET;
-		makeGammaNet();		
-		System.out.println("");
+	//	System.out.println("");
 		printDataBase(db);
 		printAllDistances();
 	
+	}
+	
+	// the classifier is gammaNet 
+	// dataSetPoints : collection on points to classify
+	// dataSetLabels : assigned labels for dataSetPoints points
+	// this method will put the assigned labels in dataSetLabeles
+	double[] classify(double[][] dataSetPoints , int dataSetSize){
+		
+		double[] dataSetLabels = new double[dataSetSize];
+		double minDistance;
+		int minIndex;
+		double currDistance;
+		
+		for (int i=1;i<dataSetSize;i++){
+			
+			minDistance = metric.calcDistance(dataSetPoints[i], gammaNetPoints[0]);
+			minIndex = 0;
+			for (int j=0;j<sizeOfGammaNet;j++){
+				currDistance = metric.calcDistance(dataSetPoints[i], gammaNetPoints[j]);
+				if (currDistance<minDistance){
+					minDistance = currDistance;
+					minIndex = j;
+				}
+			}
+			
+			dataSetLabels[i] = gammaNetLabels[minIndex];
+			
+		}
+		
+	return dataSetLabels;
+	}
+	
+	
+	double calcPenalty(int trainingSetSize, int gammaNetSize,  double alpha, int diffLabels, double delta, double epsilone){
+		
+		double pen;
+		pen = trainingSetSize * gammaNetSize * alpha * diffLabels * delta * epsilone;
+		return pen;
+	}
+	public void makeClassifier(){
+		int diffLabelCount = calcDiffLabelCount();
+		double maxDistance = getMaxDistance();
+		double currScale = maxDistance*2;
+		double mintpenalty;
+		double currPenalty;
+		double epsilon;
+		double[] assignedPointsToTrainingSetByGammaNet = new double[sizeOfTrainingSet];
+		double alpha = sizeOfTrainingSet/(sizeOfTrainingSet-sizeOfGammaNet);
+		
+		//first iteration 
+		
+		scale = currScale;
+		makeGammaNet();		
+		assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
+		epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
+		mintpenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);
+		
+		
+		System.out.println("");
+		System.out.println("current scale: " + currScale);
+		System.out.println("best scale til now: " + scale);
+		System.out.println("penalty for current scale: " + mintpenalty);
+		System.out.println("size of gamma net: " + sizeOfGammaNet);
+		System.out.println(""); 
+		int k = 0;
+		currScale /= 2;		
+		while (currScale>0 && sizeOfGammaNet != sizeOfTrainingSet && k<30){
+			
+			assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
+			epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
+			currPenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);
+			
+			System.out.println("");
+			System.out.println("current scale: " + currScale);
+			System.out.println("best scale til now: " + scale);
+			System.out.println("penalty for current scale: " + currPenalty);
+			System.out.println("smallest penalty: " + mintpenalty);
+			System.out.println("size of gamma net: " + sizeOfGammaNet);
+			System.out.println("");
+			
+			if (currPenalty<mintpenalty){
+				mintpenalty = currPenalty;
+				scale = currScale;
+			}
+			
+			currScale /= 2;
+			k++;
+		}		
+	}
+	
+	
+	double calcClassifierError(double[][] dataSetPoints , double[] originalLbels, double[] assignedLabels, int size){
+		
+		double error = 0;
+		for (int i=0;i<size;i++){
+			
+			if (originalLbels[i]!=assignedLabels[i]){
+				error++;
+			}			
+		}
+		error = error/size;
+		
+		return error;
+		
+	}
+	
+	double getMaxDistance(){
+		
+		double max = 0;
+		
+		for (int i=0;i<sizeOfTrainingSet;i++){
+			double currDistance = metric.calcDistance(trainingSetPoints[0],trainingSetPoints[i]);
+			if (max<currDistance) {max = currDistance;}
+		}
+				
+		return max;
+	}
+	
+	int calcDiffLabelCount(){
+		Map<Double,Boolean> lableToCount = new HashMap<Double,Boolean>();
+		
+		for (int i=0;i<sizeOfTrainingSet;i++){
+			double currLabel = trainingSetLabels[i];
+			if (!lableToCount.containsKey(currLabel)){
+				lableToCount.put(currLabel, true);
+			}
+		}
+			
+	return lableToCount.size();		
 	}
 	
 	public void makeMetric(String metricType){	
@@ -252,6 +387,8 @@ public void printDataBase(data db){
 			case GAMMA_NET:
 				 System.out.println();
 				 System.out.println("gamma net- ");
+				 System.out.println();
+				 System.out.println("scale: " + scale);
 				 System.out.println("size: " + sizeOfGammaNet);
 				 System.out.println("dim: " + dim);
 				 for (int i =0; i<sizeOfGammaNet;i++){
