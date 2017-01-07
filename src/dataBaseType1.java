@@ -95,33 +95,19 @@ public class dataBaseType1 {
 		//first iteration 
 		
 		scale = currScale;
-		makeGammaNet();		
+		makeGammaNet(currScale);		
 		assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
 		epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
 		mintpenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);
 		
-		
-		System.out.println("");
-		System.out.println("current scale: " + currScale);
-		System.out.println("best scale til now: " + scale);
-		System.out.println("penalty for current scale: " + mintpenalty);
-		System.out.println("size of gamma net: " + sizeOfGammaNet);
-		System.out.println(""); 
-		int k = 0;
 		currScale /= 2;		
-		while (currScale>0 && sizeOfGammaNet != sizeOfTrainingSet && k<30){
+		while (currScale>0 && sizeOfGammaNet != sizeOfTrainingSet ){
 			
+			makeGammaNet(currScale);	
 			assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
 			epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
 			currPenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);
-			
-			System.out.println("");
-			System.out.println("current scale: " + currScale);
-			System.out.println("best scale til now: " + scale);
-			System.out.println("penalty for current scale: " + currPenalty);
-			System.out.println("smallest penalty: " + mintpenalty);
-			System.out.println("size of gamma net: " + sizeOfGammaNet);
-			System.out.println("");
+		
 			
 			if (currPenalty<mintpenalty){
 				mintpenalty = currPenalty;
@@ -129,7 +115,6 @@ public class dataBaseType1 {
 			}
 			
 			currScale /= 2;
-			k++;
 		}		
 	}
 	
@@ -249,7 +234,7 @@ public class dataBaseType1 {
 	
 	
 	
-	public void makeGammaNet(){
+	public void makeGammaNet(double scale){
 		
 	/**
 	 * tmpPoint : temporary array for the gamma net elements
