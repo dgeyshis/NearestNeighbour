@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class dataBaseType1 {
 	
 	/**
+	 * information regarding the class members:
 	 * trainingSetPoints : a collection of training set points such that dataSetPoints[i] is the i'th point
 	 * trainingSetLabels : training set labels such that trainingSetLabels[i] is the label of trainingSetPoints[i]
 	 * gammaNetPoints : gamma net point
