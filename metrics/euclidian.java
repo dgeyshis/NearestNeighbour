@@ -1,8 +1,8 @@
 
-public class euclidian extends Metric<double[], Double> {
+public class euclidian implements Metric<double[]> {
 
 	
-	public Double calcDistance(double[] p1, double[] p2) {
+	public double calcDistance(double[] p1, double[] p2) {
 		int len = p1.length;
 		double sum = 0;
 		

@@ -1,9 +1,9 @@
 
-public class Metric<P1,P2> {
+public interface Metric<T>{
 //P1- type of distance
 //P2- type if points
 	
-	public P2 calcDistance(P1 p1, P1 p2){return null;};
+	public double calcDistance(T p1, T p2);
 
 
 }
