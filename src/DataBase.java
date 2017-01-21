@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class DataBase<T> {
 	
@@ -46,12 +48,29 @@ public abstract class DataBase<T> {
 		this.delta = _delta; 
 		data db = data.TRAINING_SET;
 		makeTrainingSet(trainingSetFilePath);
+		shuffleTrainSet();
 		makeMetric(metricType);
 		printDataBase(db);
 		makeClassifier();
 		db = data.GAMMA_NET;
 		printDataBase(db);
 		printAllDistances();
+	}
+	
+	private void shuffleTrainSet() {
+	 Random rnd = ThreadLocalRandom.current();
+	    for (int i = trainingSetPoints.length - 1; i > 0; i--)
+	    {
+	      int index = rnd.nextInt(i + 1);
+	      // Simple swap
+	      T currPoint = trainingSetPoints[index];
+	      double currLabel = trainingSetLabels[index];
+	      trainingSetPoints[index] = trainingSetPoints[i];
+	      trainingSetLabels[index] = trainingSetLabels[i];
+	      trainingSetLabels[i] = currLabel;
+	      trainingSetPoints[i] = currPoint;
+	    }
+				
 	}
 
 	double[] classify(T[] dataSetPoints , int dataSetSize){
