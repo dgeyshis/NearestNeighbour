@@ -40,19 +40,19 @@ public class ConfusionMatrix {
 		Iterator<Double> possibleLabelsIterator = this.possibleLabels.iterator();
 		for (int i = 0; i<this.cm.length; i++){
 			System.out.println();
-			System.out.print(possibleLabelsIterator.next().doubleValue() + "| ");
+			System.out.print(possibleLabelsIterator.next().doubleValue() + "|| ");
 			for (int j = 0; j<this.cm.length; j ++){ 
 				System.out.print(this.cm[i][j] + " | ");
 			}
 		}
 		System.out.println();
-		System.out.print("------");
+		System.out.print("-------");
 		for (int i = 0; i<this.cm.length; i++){
 			System.out.print("------");
 		}
 		possibleLabelsIterator = this.possibleLabels.iterator();
 		System.out.println();
-		System.out.print("   | ");
+		System.out.print("    | ");
 		for (int i = 0; i<this.cm.length; i++){
 			System.out.print(possibleLabelsIterator.next().doubleValue() + " | ");
 		}
