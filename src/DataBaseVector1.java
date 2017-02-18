@@ -66,8 +66,8 @@ public class DataBaseVector1 extends DataBase<double[]> {
 		 Scanner s = new Scanner(new FileReader(testSetFilePath));
 		 sizeOfTestSet = Integer.parseInt(s.findInLine(pattern1));
 		 dimTestSet = Integer.parseInt(s.findInLine(pattern1));
-		 testSetPoints = new double[sizeOfTrainingSet][dimTestSet];
-		 testSetLabels = new double[sizeOfTrainingSet];
+		 testSetPoints = new double[sizeOfTestSet][dimTestSet];
+		 testSetLabels = new double[sizeOfTestSet];
 		 String inLine;
 		 int currPoint=0;
 		 int currAttribute=0;

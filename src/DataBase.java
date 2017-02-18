@@ -138,13 +138,13 @@ public abstract class DataBase<T> {
 		scale = currScale;
 		makeGammaNet(currScale);		
 		assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
-		epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
+		epsilon = calcClassifierError(trainingSetLabels,assignedPointsToTrainingSetByGammaNet);
 		mintpenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);
 		currScale /= 2;		
 		while (currScale>0 && sizeOfGammaNet != sizeOfTrainingSet ){
 			makeGammaNet(currScale);	
 			assignedPointsToTrainingSetByGammaNet = classify(trainingSetPoints, sizeOfTrainingSet);
-			epsilon = calcClassifierError(trainingSetPoints, trainingSetLabels,assignedPointsToTrainingSetByGammaNet,sizeOfTrainingSet);
+			epsilon = calcClassifierError(trainingSetLabels,assignedPointsToTrainingSetByGammaNet);
 			currPenalty = calcPenalty(sizeOfTrainingSet,sizeOfGammaNet,alpha,diffLabelCount,delta,epsilon);	
 			if (currPenalty<mintpenalty){
 				mintpenalty = currPenalty;
@@ -154,7 +154,7 @@ public abstract class DataBase<T> {
 		}		
 	}
 	
-	double calcClassifierError(T[] dataSetPoints , double[] originalLabels, double[] assignedLabels, int size){
+	double calcClassifierError(double[] originalLabels, double[] assignedLabels){
 		
 		/**
 		 * This method calculates the error of the classifier
@@ -167,7 +167,7 @@ public abstract class DataBase<T> {
 		 * @return double, the error of the labels in assignedLabels on the points in dataSetPoints
 		 * the formula for the error is - sum of I[originalLbels[i]!=assignedLabels[i]]\size, 0<=i<=size 
 		 */
-		
+		int size = originalLabels.length;
 		double error = 0;
 		for (int i = 0; i < size; i++){
 			if (originalLabels[i] != assignedLabels[i]){
