@@ -29,6 +29,9 @@ public class NearestNeighborGenerator {
 				case "vector1" :
 					db = new DataBaseVector1(trainingSetFilePath, metricType, delta);
 					break;
+				case "MNIST" :
+					db = new DataBaseMnist(trainingSetFilePath, metricType, delta);
+					break;
 				default:
 		             throw new IllegalArgumentException("Invalid data type: " + dataType);
 			}
@@ -41,10 +44,10 @@ public class NearestNeighborGenerator {
 		double[] ans = db.clasifyTestSet();
 		double errorRate = db.calcClassifierError(db.testSetLabels, ans) * 100;
 		System.out.println("the error rate on the test set is:" + errorRate + "%");
-		System.out.println("the classified test set is: ");
-		for (int i = 0; i< db.sizeOfTestSet; i++) {
-			System.out.println(Arrays.toString((double[]) db.testSetPoints[i]) + ": " + ans[i]);
-		}
+//		System.out.println("the classified test set is: ");
+//		for (int i = 0; i< db.sizeOfTestSet; i++) {
+//			System.out.println(Arrays.toString((double[]) db.testSetPoints[i]) + ": " + ans[i]);
+//		}
 		
 		ConfusionMatrix cm = new ConfusionMatrix(ans, db.testSetLabels);
 		cm.plot();

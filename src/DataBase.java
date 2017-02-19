@@ -50,11 +50,11 @@ public abstract class DataBase<T> {
 		makeTrainingSet(trainingSetFilePath);
 		shuffleTrainSet();
 		makeMetric(metricType);
-		printDataBase(db);
+//		printDataBase(db);
 		makeClassifier();
 		db = data.GAMMA_NET;
-		printDataBase(db);
-		printAllDistances();
+//		printDataBase(db);
+//		printAllDistances();
 	}
 	
 	private void shuffleTrainSet() {
@@ -233,6 +233,7 @@ public abstract class DataBase<T> {
 	    TRAINING_SET,GAMMA_NET
 	}	
 	
+	@SuppressWarnings("unchecked")
 	public double getDistance(int i, int j, data db){
 
 		/**
